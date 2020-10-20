@@ -2,71 +2,75 @@
 #define acinaAbertura          0
 #define acionaFechamento       1
 #define sensorPortao           2
- static unsigned long delayPisca;
- static unsigned long delayPisca1;   
-int fimDeCurso; 
-void portaoaberto(){
-        delayPisca = millis();
-
-       if ( (millis() - delayPisca1) < 1000 ) {
+unsigned long delayPisca; 
+   
+int fimDeCurso;
+ 
+void portaoaberto(){         
+       fimDeCurso = digitalRead(sensorPortao); 
+       while(fimDeCurso){
+       if ( (millis() - delayPisca) < 1000 ) {
          digitalWrite(acinaAbertura,HIGH);
          Serial.println("Potão aberto <1000");
          Serial.println("transmitindo");
        }
-
-       if ( ((millis() - delayPisca1) >= 1000) && ((millis() - delayPisca1) < 2500) ) {
+       if ( ((millis() - delayPisca) >= 1000) && ((millis() - delayPisca) < 2500) ) {
            digitalWrite(acinaAbertura,LOW);
            Serial.println("Potão aberto >= 1000");
            Serial.println("transmissão deligada ");
-       }      
-
-       if ( ((millis() - delayPisca1) >= 2500) && ((millis() - delayPisca1) < 3500) ) {
+       }    
+       if ( ((millis() - delayPisca) >= 2500) && ((millis() - delayPisca) < 3500) ) {
           digitalWrite(acinaAbertura,HIGH);
           Serial.println("Potão aberto >= 2500");
           Serial.println("transmitindo");
        }
-       if ( ((millis() - delayPisca1) >= 3500) && ((millis() - delayPisca1) < 5000) ) {
+       if ( ((millis() - delayPisca) >= 3500) && ((millis() - delayPisca) < 4500) ) {
            digitalWrite(acinaAbertura,LOW);
            Serial.println("Potão aberto >= 3500");
            Serial.println("transmissão deligada");
-       }         
-
-       if ( ((millis() - delayPisca1) >= 5000) && ((millis() - delayPisca1) < 10000) ) {
+       }  
+        if ( ((millis() - delayPisca) >= 4500) && ((millis() - delayPisca) < 5000) ) {
+           digitalWrite(acinaAbertura,HIGH);
+           Serial.println("Potão aberto >= 4500");
+           Serial.println("transmissão deligada");
+       }                       
+       if ( ((millis() - delayPisca) >= 5000) && ((millis() - delayPisca) < 10000) ) {
            digitalWrite(acinaAbertura,LOW);
            Serial.println("Potão aberto >= 5000");
            Serial.println("transmissão deligada");
-       }       
-
-       if ( (millis() - delayPisca1) > 100000 ) {
+       }      
+       if ( (millis() - delayPisca) > 100500 ) {
           Serial.println("milis reiniciado");
-          
-       } 
-       fimDeCurso = digitalRead(sensorPortao);    
-   
+          delayPisca = millis();          
+       }
+       fimDeCurso = digitalRead(sensorPortao); 
+  }      
 }
 void portaoFechado(){
-   delayPisca1 = millis();
-  
-
+  fimDeCurso = digitalRead(sensorPortao); 
+ while(!fimDeCurso){
        if ( (millis() - delayPisca) < 1000 ) {
          digitalWrite(acionaFechamento,HIGH);
          Serial.println("Potão fechado <1000");
          Serial.println("transmitindo");
        }
-
        if ( ((millis() - delayPisca) >= 1000) && ((millis() - delayPisca) < 2500) ) {
            digitalWrite(acionaFechamento,LOW);
            Serial.println("Potão fechado >= 1000");
            Serial.println("transmissão deligada ");
-       }      
-
+       }
        if ( ((millis() - delayPisca) >= 2500) && ((millis() - delayPisca) < 3500) ) {
           digitalWrite(acionaFechamento,HIGH);
           Serial.println("Potão fechado >= 2500");
           Serial.println("transmitindo");
        }
-       if ( ((millis() - delayPisca) >= 3500) && ((millis() - delayPisca) < 5000) ) {
+       if ( ((millis() - delayPisca) >= 3500) && ((millis() - delayPisca) < 4500) ) {
            digitalWrite(acionaFechamento,LOW);
+           Serial.println("Potão aberto >= 3500");
+           Serial.println("transmissão deligada");
+       }  
+       if ( ((millis() - delayPisca) >= 4500) && ((millis() - delayPisca) < 5000) ) {
+           digitalWrite(acionaFechamento,HIGH);
            Serial.println("Potão fechado >= 3500");
            Serial.println("transmissão deligada");
        }         
@@ -77,12 +81,12 @@ void portaoFechado(){
            Serial.println("transmissão deligada");
        }       
 
-       if ( (millis() - delayPisca) > 100000 ) {
+       if ( (millis() - delayPisca) > 100500 ) {
           Serial.println("milis reiniciado");
           delayPisca = millis();
        } 
        fimDeCurso = digitalRead(sensorPortao);    
-   
+  }
   }
 void setup() {
  Serial.begin(115200);   
@@ -99,12 +103,19 @@ void loop() {
    
   fimDeCurso = digitalRead(sensorPortao);
   if(!fimDeCurso){
-    portaoFechado();
-    digitalWrite(acinaAbertura, LOW);
-    }else{      
+     Serial.println("porão fechado");
+     Serial.println("milis reiniciado");
+     delayPisca = millis();
+     
+     portaoFechado();
+     
+    }else{
+      Serial.println("porão aberto");
+      Serial.println("milis reiniciado");
+      delayPisca = millis();
+      digitalWrite(acionaFechamento, LOW);     
       portaoaberto();
-      digitalWrite(acionaFechamento, LOW);
+      
       }
-
- 
+   
 }
