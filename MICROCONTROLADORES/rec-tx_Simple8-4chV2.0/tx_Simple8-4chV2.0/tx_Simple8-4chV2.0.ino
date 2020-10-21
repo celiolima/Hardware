@@ -1,4 +1,5 @@
 
+
 #define acinaAbertura          0
 #define acionaFechamento       1
 #define sensorPortao           2
@@ -39,7 +40,7 @@ void portaoaberto(){
            Serial.println("Potão aberto >= 5000");
            Serial.println("transmissão deligada");
        }      
-       if ( (millis() - delayPisca) > 100500 ) {
+       if ( (millis() - delayPisca) > 101000 ) {
           Serial.println("milis reiniciado");
           delayPisca = millis();          
        }
@@ -81,7 +82,7 @@ void portaoFechado(){
            Serial.println("transmissão deligada");
        }       
 
-       if ( (millis() - delayPisca) > 100500 ) {
+       if ( (millis() - delayPisca) > 101000 ) {
           Serial.println("milis reiniciado");
           delayPisca = millis();
        } 
